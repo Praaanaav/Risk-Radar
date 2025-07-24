@@ -17,7 +17,10 @@ function Markdown({ content }: { content: string }) {
       {parts.map((part, i) => {
         if (part.startsWith("**") && part.endsWith("**")) {
           return (
-            <strong key={i} className="font-bold text-foreground">
+            <strong
+              key={i}
+              className="bg-primary/20 text-primary-foreground font-semibold px-1 rounded"
+            >
               {part.slice(2, -2)}
             </strong>
           );

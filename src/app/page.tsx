@@ -86,7 +86,9 @@ export default function Home() {
 
   const handlePredict = async (data: z.infer<typeof PatientFormSchema>) => {
     setIsLoading(true);
+    // Reset previous assessment, keeping form text if it has been translated
     setText(prev => ({ ...prev, assessment: null }));
+
 
     try {
       const explanationResult = await retry(() => explainData(data));
@@ -147,7 +149,7 @@ export default function Home() {
         throw new Error("Could not generate recommendations.");
       }
       
-      const newAssessment = {
+      const newAssessment: Assessment = {
         explanation: explanationResult.explanation,
         riskLevel,
         recommendations: recommendationsResult.recommendations,
@@ -187,25 +189,19 @@ export default function Home() {
     setIsTranslating(true);
     setCurrentLanguage(language);
 
+    // Keep the current assessment to be re-translated if it exists.
+    const originalAssessment = text.assessment;
+
     if (language === "English") {
-      const originalAssessment = text.assessment ? { ...text.assessment } : null;
-      if (originalAssessment) {
-          // Re-fetch original english content
-          // This is a simplification. A better approach would be to store original english text separately
-      }
-       setText(defaultPageText); // Revert to default English text
-       // We should re-fetch assessment if it exists. For now, we clear it.
-       if (text.assessment) {
-         // This is a complex state to manage. For now, we simplify by clearing assessment on language change
-         // A more robust solution would store original English assessment and re-apply it.
-         setText(prev => ({...defaultPageText, assessment: null}));
-       }
+      // Revert all text to English, but keep the assessment structure if it exists.
+      setText({ ...defaultPageText, assessment: originalAssessment });
       setIsTranslating(false);
       return;
     }
 
     try {
-      const translateAll = async (pageText: PageText) => {
+      // We always translate from the default English text to avoid drift
+      const translateAllUi = async (pageText: PageText) => {
         const [
           translatedTitle,
           translatedDescription,
@@ -213,7 +209,6 @@ export default function Home() {
           translatedAwaitingDescription,
           translatedFormTitle,
           translatedFormDescription,
-          translatedAssessment,
         ] = await Promise.all([
           retry(() => translateText({ text: pageText.title, targetLanguage: language })).then(r => r.translatedText),
           retry(() => translateText({ text: pageText.description, targetLanguage: language })).then(r => r.translatedText),
@@ -221,7 +216,6 @@ export default function Home() {
           retry(() => translateText({ text: pageText.awaitingDataDescription, targetLanguage: language })).then(r => r.translatedText),
           retry(() => translateText({ text: pageText.form.title, targetLanguage: language })).then(r => r.translatedText),
           retry(() => translateText({ text: pageText.form.description, targetLanguage: language })).then(r => r.translatedText),
-          pageText.assessment ? translateAssessment(pageText.assessment, language) : Promise.resolve(null),
         ]);
 
         return {
@@ -233,41 +227,35 @@ export default function Home() {
             title: translatedFormTitle,
             description: translatedFormDescription,
           },
-          assessment: translatedAssessment,
+          assessment: null, // Assessment will be translated separately
         };
       };
       
-      // We always translate from the default English text to avoid drift
-      const translatedText = await translateAll(defaultPageText);
+      const translatedUiText = await translateAllUi(defaultPageText);
       
-      // If there was an assessment, we need to re-translate it too.
-      // This is tricky because the current `text.assessment` might already be translated.
-      // The most reliable way is to re-translate from a stored English version.
-      // For this implementation, we will translate the current assessment state if it exists.
-      if (text.assessment) {
-        const translatedAssessment = await translateAssessment(text.assessment, language);
-        setText({...translatedText, assessment: translatedAssessment});
-      } else {
-        setText(translatedText);
+      let translatedAssessment = null;
+      if (originalAssessment) {
+        translatedAssessment = await translateAssessment(originalAssessment, language);
       }
+      
+      setText({...translatedUiText, assessment: translatedAssessment});
 
     } catch (error) {
       console.error("Translation failed", error);
       toast({
         variant: "destructive",
         title: "Translation Error",
-        description: "Could not translate the page. Please try again.",
+        description: `Could not translate the page to ${language}. Please try again.`,
       });
       // Revert to English on failure
       setCurrentLanguage("English");
-      setText(defaultPageText);
-
+      setText({ ...defaultPageText, assessment: originalAssessment });
     } finally {
       setIsTranslating(false);
     }
   };
 
-  const pageText = isTranslating ? defaultPageText : text;
+  const pageText = text;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -313,7 +301,7 @@ export default function Home() {
             />
           </div>
           <div className="md:col-span-3">
-            {isLoading ? (
+            {isLoading || isTranslating ? (
               <RiskAssessmentSkeleton />
             ) : pageText.assessment ? (
               <div className="space-y-6">
@@ -340,4 +328,5 @@ export default function Home() {
       <Toaster />
     </div>
   );
-}
+
+    

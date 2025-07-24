@@ -9,6 +9,25 @@ type RiskAssessmentProps = {
   recommendations: string;
 };
 
+// A simple markdown to JSX component.
+function Markdown({ content }: { content: string }) {
+  const parts = content.split(/(\*\*.*?\*\*)/g);
+  return (
+    <p className="text-muted-foreground whitespace-pre-wrap">
+      {parts.map((part, i) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return (
+            <strong key={i} className="font-bold text-foreground">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        return part;
+      })}
+    </p>
+  );
+}
+
 export function RiskAssessment({
   explanation,
   riskLevel,
@@ -82,7 +101,7 @@ export function RiskAssessment({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground whitespace-pre-wrap">{recommendations}</p>
+          <Markdown content={recommendations} />
         </CardContent>
       </Card>
     </div>

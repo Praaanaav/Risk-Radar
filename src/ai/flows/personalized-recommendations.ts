@@ -19,7 +19,11 @@ const PersonalizedRecommendationsInputSchema = z.object({
 export type PersonalizedRecommendationsInput = z.infer<typeof PersonalizedRecommendationsInputSchema>;
 
 const PersonalizedRecommendationsOutputSchema = z.object({
-  recommendations: z.string().describe('Personalized recommendations for the patient to reduce their risk of readmission.'),
+  recommendations: z
+    .string()
+    .describe(
+      'Personalized recommendations for the patient to reduce their risk of readmission, formatted as markdown. Important text should be bolded.'
+    ),
 });
 export type PersonalizedRecommendationsOutput = z.infer<typeof PersonalizedRecommendationsOutputSchema>;
 
@@ -33,7 +37,7 @@ const prompt = ai.definePrompt({
   name: 'personalizedRecommendationsPrompt',
   input: {schema: PersonalizedRecommendationsInputSchema},
   output: {schema: PersonalizedRecommendationsOutputSchema},
-  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission.
+  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Format the output as markdown, and bold the most critical advice.
 
 Patient Data Summary: {{{patientDataSummary}}}
 Risk Level: {{{riskLevel}}}

@@ -48,6 +48,27 @@ function Markdown({ content }: { content: string }) {
   );
 }
 
+function HighlightedFutureRisks({ content }: { content: string }) {
+  const criticalTerms = ["permanent disability", "death"];
+  const regex = new RegExp(`(${criticalTerms.join("|")})`, "gi");
+  const parts = content.split(regex);
+
+  return (
+    <p className="text-yellow-700">
+      {parts.map((part, i) => {
+        if (criticalTerms.includes(part.toLowerCase())) {
+          return (
+            <span key={i} className="font-bold text-red-600">
+              {part}
+            </span>
+          );
+        }
+        return part;
+      })}
+    </p>
+  );
+}
+
 
 export function RiskAssessment({
   explanation,
@@ -124,7 +145,7 @@ export function RiskAssessment({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-yellow-700">{futureRisks}</p>
+            <HighlightedFutureRisks content={futureRisks} />
           </CardContent>
         </Card>
       )}

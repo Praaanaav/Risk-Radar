@@ -71,7 +71,9 @@ export default function Home() {
       const lowercasedDiagnosis = diagnosis.toLowerCase();
       const lowercasedCondition = currentCondition.toLowerCase();
 
-      if (priorInpatientVisits > 10) {
+      if (priorInpatientVisits > 20) {
+        riskScore += 5;
+      } else if (priorInpatientVisits > 10) {
         riskScore += 3;
       } else if (priorInpatientVisits > 2) {
         riskScore += 2;
@@ -85,14 +87,14 @@ export default function Home() {
         riskScore++;
       }
 
-      const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis", "cardiac arrest"];
+      const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis", "cardiac arrest", "snake bite"];
       for (const term of criticalDiagnosisTerms) {
         if (lowercasedDiagnosis.includes(term)) {
-          riskScore += 3;
+          riskScore += 5; // Higher score for critical diagnosis
         }
       }
 
-      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating", "bleeding", "amputation", "snake bite"];
+      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating", "bleeding", "amputation"];
       let isEmergency = false;
       for (const term of criticalConditionTerms) {
         if (lowercasedCondition.includes(term) || lowercasedDiagnosis.includes(term)) {
@@ -100,6 +102,12 @@ export default function Home() {
           isEmergency = true;
         }
       }
+      
+      if (lowercasedCondition.includes("snake bite")) {
+        isEmergency = true;
+        riskScore += 5;
+      }
+
 
       const riskLevel: "High" | "Low" = riskScore >= 4 ? "High" : "Low";
 
@@ -156,11 +164,11 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+        <div className="grid gap-8 md:grid-cols-5">
+          <div className="md:col-span-2">
             <PatientForm onPredict={handlePredict} isLoading={isLoading} />
           </div>
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             {isLoading ? (
               <RiskAssessmentSkeleton />
             ) : assessment ? (

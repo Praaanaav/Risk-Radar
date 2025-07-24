@@ -30,11 +30,13 @@ import {
   HeartPulse,
   Loader2,
   Pill,
+  User,
   Users,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 export const PatientFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
   age: z.coerce.number().int().min(0, "Age must be positive.").max(120, "Age seems too high."),
   gender: z.enum(["Male", "Female", "Other"]),
   priorInpatientVisits: z.coerce
@@ -55,6 +57,7 @@ export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
   const form = useForm<z.infer<typeof PatientFormSchema>>({
     resolver: zodResolver(PatientFormSchema),
     defaultValues: {
+      name: "Jane Doe",
       age: 55,
       gender: "Female",
       priorInpatientVisits: 1,
@@ -75,6 +78,22 @@ export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onPredict)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <FormControl>
+                      <Input placeholder="e.g., Jane Doe" className="pl-9" {...field} />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="age"

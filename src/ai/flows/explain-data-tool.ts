@@ -13,6 +13,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ExplainDataInputSchema = z.object({
+  name: z.string().describe("The patient's name."),
   age: z.number().describe('The age of the patient.'),
   gender: z.string().describe('The gender of the patient.'),
   priorInpatientVisits: z.number().describe('The number of prior inpatient visits of the patient.'),
@@ -35,7 +36,7 @@ const prompt = ai.definePrompt({
   name: 'explainDataPrompt',
   input: {schema: ExplainDataInputSchema},
   output: {schema: ExplainDataOutputSchema},
-  prompt: `You are a healthcare expert. Summarize the following patient data in plain English, highlighting the key factors that might influence a readmission risk assessment.\n\nPatient Data:\nAge: {{{age}}}\nGender: {{{gender}}}\nPrior Inpatient Visits: {{{priorInpatientVisits}}}\nDiagnosis: {{{diagnosis}}}\nMedications: {{{medications}}}\nCurrent Condition: {{{currentCondition}}}`,
+  prompt: `You are a healthcare expert. Summarize the following patient data in plain English, highlighting the key factors that might influence a readmission risk assessment.\n\nPatient Data:\nName: {{{name}}}\nAge: {{{age}}}\nGender: {{{gender}}}\nPrior Inpatient Visits: {{{priorInpatientVisits}}}\nDiagnosis: {{{diagnosis}}}\nMedications: {{{medications}}}\nCurrent Condition: {{{currentCondition}}}`,
 });
 
 const explainDataFlow = ai.defineFlow(

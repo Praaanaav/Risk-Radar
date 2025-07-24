@@ -184,12 +184,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <footer className="mt-16 border-t py-6">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground md:px-6">
-          <p>&copy; {new Date().getFullYear()} Risk Radar. All rights reserved.</p>
-          <p className="mt-1">Powered by GenAI and Next.js</p>
-        </div>
-      </footer>
       <Toaster />
     </div>
   );

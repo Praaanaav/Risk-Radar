@@ -88,11 +88,11 @@ export default function Home() {
       const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis", "cardiac arrest"];
       for (const term of criticalDiagnosisTerms) {
         if (lowercasedDiagnosis.includes(term)) {
-          riskScore += 2;
+          riskScore += 3;
         }
       }
 
-      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating", "bleeding", "amputation"];
+      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating", "bleeding", "amputation", "snake bite"];
       let isEmergency = false;
       for (const term of criticalConditionTerms) {
         if (lowercasedCondition.includes(term) || lowercasedDiagnosis.includes(term)) {

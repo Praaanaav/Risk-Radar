@@ -47,17 +47,27 @@ export default function Home() {
 
       // 2. Predict risk level (simulated)
       const { age, priorInpatientVisits, diagnosis } = data;
-      let riskLevel: "High" | "Low" = "Low";
+      let riskScore = 0;
       const lowercasedDiagnosis = diagnosis.toLowerCase();
-      if (
-        priorInpatientVisits > 1 ||
-        age > 65 ||
-        lowercasedDiagnosis.includes("heart failure") ||
-        lowercasedDiagnosis.includes("copd") ||
-        lowercasedDiagnosis.includes("diabetes")
-      ) {
-        riskLevel = "High";
+
+      if (priorInpatientVisits > 1) {
+        riskScore++;
       }
+      if (age > 65) {
+        riskScore++;
+      }
+      if (lowercasedDiagnosis.includes("heart failure")) {
+        riskScore++;
+      }
+      if (lowercasedDiagnosis.includes("copd")) {
+        riskScore++;
+      }
+      if (lowercasedDiagnosis.includes("diabetes")) {
+        riskScore++;
+      }
+
+      const riskLevel: "High" | "Low" = riskScore >= 2 ? "High" : "Low";
+
 
       // 3. Get personalized recommendations
       const recommendationsResult = await generatePersonalizedRecommendations({

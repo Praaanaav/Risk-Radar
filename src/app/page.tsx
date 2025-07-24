@@ -47,33 +47,41 @@ export default function Home() {
       }
 
       // 2. Predict risk level (simulated)
-      const { age, priorInpatientVisits, diagnosis } = data;
+      const { age, priorInpatientVisits, diagnosis, currentCondition } = data;
       let riskScore = 0;
       const lowercasedDiagnosis = diagnosis.toLowerCase();
+      const lowercasedCondition = currentCondition.toLowerCase();
 
-      if (priorInpatientVisits > 2) {
-        riskScore+=2;
+      if (priorInpatientVisits > 10) {
+        riskScore += 3;
+      } else if (priorInpatientVisits > 2) {
+        riskScore += 2;
       } else if (priorInpatientVisits > 0) {
         riskScore++;
       }
 
       if (age > 75) {
-        riskScore+=2;
+        riskScore += 2;
       } else if (age > 60) {
         riskScore++;
       }
-      
-      if (lowercasedDiagnosis.includes("heart failure")) {
-        riskScore++;
-      }
-      if (lowercasedDiagnosis.includes("copd")) {
-        riskScore++;
-      }
-      if (lowercasedDiagnosis.includes("diabetes")) {
-        riskScore++;
+
+      const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis"];
+      for (const term of criticalDiagnosisTerms) {
+        if (lowercasedDiagnosis.includes(term)) {
+          riskScore += 2;
+        }
       }
 
-      const riskLevel: "High" | "Low" = riskScore >= 3 ? "High" : "Low";
+      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating"];
+       for (const term of criticalConditionTerms) {
+        if (lowercasedCondition.includes(term)) {
+          riskScore += 5; // High score for immediate critical conditions
+        }
+      }
+
+
+      const riskLevel: "High" | "Low" = riskScore >= 4 ? "High" : "Low";
 
 
       // 3. Get personalized recommendations

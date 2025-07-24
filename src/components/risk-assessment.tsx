@@ -10,17 +10,23 @@ type RiskAssessmentProps = {
 };
 
 // A simple markdown to JSX component.
-function Markdown({ content }: { content: string }) {
+function Markdown({
+  content,
+  riskLevel,
+}: {
+  content: string;
+  riskLevel: "High" | "Low";
+}) {
   const parts = content.split(/(\*\*.*?\*\*)/g);
+  const highlightClass =
+    riskLevel === "High" ? "text-destructive" : "text-accent";
+
   return (
     <p className="text-muted-foreground whitespace-pre-wrap">
       {parts.map((part, i) => {
         if (part.startsWith("**") && part.endsWith("**")) {
           return (
-            <strong
-              key={i}
-              className="bg-primary/20 text-primary-foreground font-semibold px-1 rounded"
-            >
+            <strong key={i} className={`${highlightClass} font-semibold`}>
               {part.slice(2, -2)}
             </strong>
           );
@@ -104,7 +110,7 @@ export function RiskAssessment({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Markdown content={recommendations} />
+          <Markdown content={recommendations} riskLevel={riskLevel} />
         </CardContent>
       </Card>
     </div>

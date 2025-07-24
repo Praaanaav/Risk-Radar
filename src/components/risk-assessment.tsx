@@ -113,47 +113,65 @@ export function RiskAssessment({
         </Card>
       )}
 
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-headline">
-            <Bot className="h-5 w-5 text-primary" />
-            <span>AI Data Summary</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground whitespace-pre-wrap">{explanation}</p>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <Card className="shadow-lg h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-headline">
+                <Bot className="h-5 w-5 text-primary" />
+                <span>AI Data Summary</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground whitespace-pre-wrap">{explanation}</p>
+            </CardContent>
+          </Card>
 
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-headline">
-            <config.Icon className={`h-5 w-5 ${config.textColor}`} />
-            <span>Readmission Risk Assessment</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div
-              className={`flex h-16 w-16 items-center justify-center rounded-full ${config.bgColor}`}
-            >
-              <config.Icon className={`h-8 w-8 ${config.textColor}`} />
-            </div>
-            <div>
-              <Badge variant={config.badgeVariant} className="text-sm">
-                {config.label}
-              </Badge>
-              <p className="mt-1 text-muted-foreground">
-                The patient is at a {riskLevel.toLowerCase()} risk of
-                readmission.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-headline">
+                <config.Icon className={`h-5 w-5 ${config.textColor}`} />
+                <span>Readmission Risk Assessment</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <div
+                  className={`flex h-16 w-16 items-center justify-center rounded-full ${config.bgColor}`}
+                >
+                  <config.Icon className={`h-8 w-8 ${config.textColor}`} />
+                </div>
+                <div>
+                  <Badge variant={config.badgeVariant} className="text-sm">
+                    {config.label}
+                  </Badge>
+                  <p className="mt-1 text-muted-foreground">
+                    The patient is at a {riskLevel.toLowerCase()} risk of
+                    readmission.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="space-y-6">
+          <Card className="shadow-lg h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-headline">
+                <HeartPulse className="h-5 w-5 text-accent" />
+                <span>Personalized Recommendations</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Markdown content={recommendations} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
       
       {futureRisks && (
-        <Card className="shadow-lg bg-yellow-50 border-yellow-200">
+        <Card className="shadow-lg bg-yellow-50 border-yellow-200 mt-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline text-yellow-800">
               <Star className="h-5 w-5" />
@@ -165,18 +183,6 @@ export function RiskAssessment({
           </CardContent>
         </Card>
       )}
-
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-headline">
-            <HeartPulse className="h-5 w-5 text-accent" />
-            <span>Personalized Recommendations</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Markdown content={recommendations} />
-        </CardContent>
-      </Card>
     </div>
   );
 }

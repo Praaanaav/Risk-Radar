@@ -31,6 +31,24 @@ type Assessment = {
   emergencyPlan?: string;
 };
 
+// A simple retry utility to handle transient errors
+async function retry<T>(fn: () => Promise<T>, retries = 3, delay = 1000): Promise<T> {
+  let lastError: Error | undefined;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      if (i < retries - 1) {
+        // Using exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+      }
+    }
+  }
+  throw lastError;
+}
+
+
 export default function Home() {
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +59,8 @@ export default function Home() {
     setAssessment(null);
 
     try {
-      // 1. Get data explanation
-      const explanationResult = await explainData(data);
+      // 1. Get data explanation with retry
+      const explanationResult = await retry(() => explainData(data));
       if (!explanationResult.explanation) {
         throw new Error("Could not generate data explanation.");
       }
@@ -67,7 +85,7 @@ export default function Home() {
         riskScore++;
       }
 
-      const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis"];
+      const criticalDiagnosisTerms = ["heart failure", "copd", "diabetes", "unconsciousness", "stroke", "cancer", "sepsis", "cardiac arrest"];
       for (const term of criticalDiagnosisTerms) {
         if (lowercasedDiagnosis.includes(term)) {
           riskScore += 2;
@@ -86,12 +104,12 @@ export default function Home() {
       const riskLevel: "High" | "Low" = riskScore >= 4 ? "High" : "Low";
 
 
-      // 3. Get personalized recommendations
-      const recommendationsResult = await generatePersonalizedRecommendations({
+      // 3. Get personalized recommendations with retry
+      const recommendationsResult = await retry(() => generatePersonalizedRecommendations({
         patientDataSummary: explanationResult.explanation,
         riskLevel,
         isEmergency,
-      });
+      }));
       if (!recommendationsResult.recommendations || !recommendationsResult.futureRisks) {
         throw new Error("Could not generate recommendations.");
       }

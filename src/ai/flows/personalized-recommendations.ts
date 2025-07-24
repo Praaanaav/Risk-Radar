@@ -22,7 +22,7 @@ const PersonalizedRecommendationsOutputSchema = z.object({
   recommendations: z
     .string()
     .describe(
-      'Personalized recommendations for the patient to reduce their risk of readmission, formatted as markdown. Important text should be bolded.'
+      'Personalized recommendations for the patient to reduce their risk of readmission, formatted as markdown. Critical advice that are things to do should be marked with [DO] and things to avoid with [DON\'T]. For example: "[DO]Take your medication as prescribed." or "[DON\'T]Skip your follow-up appointments."'
     ),
 });
 export type PersonalizedRecommendationsOutput = z.infer<typeof PersonalizedRecommendationsOutputSchema>;
@@ -37,7 +37,10 @@ const prompt = ai.definePrompt({
   name: 'personalizedRecommendationsPrompt',
   input: {schema: PersonalizedRecommendationsInputSchema},
   output: {schema: PersonalizedRecommendationsOutputSchema},
-  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Format the output as markdown, and bold the most critical advice.
+  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Format the output as markdown.
+
+Prefix advice that the patient **should do** with "[DO]".
+Prefix advice that the patient **should not do** (or should avoid) with "[DON'T]".
 
 Patient Data Summary: {{{patientDataSummary}}}
 Risk Level: {{{riskLevel}}}

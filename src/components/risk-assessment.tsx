@@ -10,32 +10,37 @@ type RiskAssessmentProps = {
 };
 
 // A simple markdown to JSX component.
-function Markdown({
-  content,
-  riskLevel,
-}: {
-  content: string;
-  riskLevel: "High" | "Low";
-}) {
-  const parts = content.split(/(\*\*.*?\*\*)/g);
-  const highlightClass =
-    riskLevel === "High" ? "text-destructive" : "text-accent";
+function Markdown({ content }: { content: string }) {
+  const parts = content.split(/(\[DO\].*?|\[DON'T\].*?)(?=\n|\[DO\]|\[DON'T\]|$)/g);
 
   return (
-    <p className="text-muted-foreground whitespace-pre-wrap">
+    <div className="text-muted-foreground whitespace-pre-wrap space-y-2">
       {parts.map((part, i) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
+        if (part.startsWith("[DO]")) {
           return (
-            <strong key={i} className={`${highlightClass} font-semibold`}>
-              {part.slice(2, -2)}
-            </strong>
+            <p key={i}>
+              <span className="font-semibold text-accent">DO: </span>
+              {part.slice(4).trim()}
+            </p>
           );
         }
-        return part;
+        if (part.startsWith("[DON'T]")) {
+          return (
+            <p key={i}>
+              <span className="font-semibold text-destructive">DON'T: </span>
+              {part.slice(7).trim()}
+            </p>
+          );
+        }
+        if (part.trim()) {
+           return <p key={i}>{part.trim()}</p>;
+        }
+        return null;
       })}
-    </p>
+    </div>
   );
 }
+
 
 export function RiskAssessment({
   explanation,
@@ -110,7 +115,7 @@ export function RiskAssessment({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Markdown content={recommendations} riskLevel={riskLevel} />
+          <Markdown content={recommendations} />
         </CardContent>
       </Card>
     </div>

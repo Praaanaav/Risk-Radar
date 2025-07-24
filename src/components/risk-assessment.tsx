@@ -1,7 +1,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bot, HeartPulse, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Bot, CheckCircle, HeartPulse, ShieldAlert, ShieldCheck, XCircle } from "lucide-react";
 
 type RiskAssessmentProps = {
   explanation: string;
@@ -14,22 +14,28 @@ function Markdown({ content }: { content: string }) {
   const parts = content.split(/(\[DO\].*?|\[DON'T\].*?)(?=\n|\[DO\]|\[DON'T\]|$)/g);
 
   return (
-    <div className="text-muted-foreground whitespace-pre-wrap space-y-2">
+    <div className="text-muted-foreground whitespace-pre-wrap space-y-3">
       {parts.map((part, i) => {
         if (part.startsWith("[DO]")) {
           return (
-            <p key={i}>
-              <span className="font-semibold text-accent">DO: </span>
-              {part.slice(4).trim()}
-            </p>
+            <div key={i} className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 shrink-0 text-accent mt-0.5" />
+              <p>
+                <span className="font-bold text-foreground">DO: </span>
+                {part.slice(4).trim()}
+              </p>
+            </div>
           );
         }
         if (part.startsWith("[DON'T]")) {
           return (
-            <p key={i}>
-              <span className="font-semibold text-destructive">DON'T: </span>
-              {part.slice(7).trim()}
-            </p>
+            <div key={i} className="flex items-start gap-3">
+              <XCircle className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
+              <p>
+                <span className="font-bold text-foreground">DON'T: </span>
+                {part.slice(7).trim()}
+              </p>
+            </div>
           );
         }
         if (part.trim()) {

@@ -103,7 +103,7 @@ export default function Home() {
         }
       }
       
-      if (lowercasedCondition.includes("snake bite")) {
+      if (lowercasedCondition.includes("snake bite") || lowercasedDiagnosis.includes("snake bite")) {
         isEmergency = true;
         riskScore += 5;
       }

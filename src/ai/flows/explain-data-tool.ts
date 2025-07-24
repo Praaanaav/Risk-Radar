@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -17,6 +18,7 @@ const ExplainDataInputSchema = z.object({
   priorInpatientVisits: z.number().describe('The number of prior inpatient visits of the patient.'),
   diagnosis: z.string().describe('The primary diagnosis of the patient.'),
   medications: z.string().describe('The list of medications the patient is currently taking.'),
+  currentCondition: z.string().describe("The patient's description of their current condition."),
 });
 export type ExplainDataInput = z.infer<typeof ExplainDataInputSchema>;
 
@@ -33,7 +35,7 @@ const prompt = ai.definePrompt({
   name: 'explainDataPrompt',
   input: {schema: ExplainDataInputSchema},
   output: {schema: ExplainDataOutputSchema},
-  prompt: `You are a healthcare expert. Summarize the following patient data in plain English, highlighting the key factors that might influence a readmission risk assessment.\n\nPatient Data:\nAge: {{{age}}}\nGender: {{{gender}}}\nPrior Inpatient Visits: {{{priorInpatientVisits}}}\nDiagnosis: {{{diagnosis}}}\nMedications: {{{medications}}}`,
+  prompt: `You are a healthcare expert. Summarize the following patient data in plain English, highlighting the key factors that might influence a readmission risk assessment.\n\nPatient Data:\nAge: {{{age}}}\nGender: {{{gender}}}\nPrior Inpatient Visits: {{{priorInpatientVisits}}}\nDiagnosis: {{{diagnosis}}}\nMedications: {{{medications}}}\nCurrent Condition: {{{currentCondition}}}`,
 });
 
 const explainDataFlow = ai.defineFlow(

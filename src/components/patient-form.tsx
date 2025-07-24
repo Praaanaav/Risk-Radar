@@ -27,6 +27,7 @@ import {
   BedDouble,
   CakeSlice,
   FileText,
+  HeartPulse,
   Loader2,
   Pill,
   Users,
@@ -42,6 +43,7 @@ export const PatientFormSchema = z.object({
     .min(0, "Visits cannot be negative."),
   diagnosis: z.string().min(3, "Please provide a more detailed diagnosis."),
   medications: z.string().min(3, "Please provide more detailed medication info."),
+  currentCondition: z.string().min(3, "Please describe the patient's current condition."),
 });
 
 type PatientFormProps = {
@@ -58,6 +60,7 @@ export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
       priorInpatientVisits: 1,
       diagnosis: "Chronic Heart Failure, Type 2 Diabetes",
       medications: "Lisinopril, Metformin, Furosemide",
+      currentCondition: "Feeling tired and occasionally dizzy.",
     },
   });
 
@@ -155,6 +158,26 @@ export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
                     <Pill className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <FormControl>
                       <Textarea placeholder="e.g., Metformin, Lisinopril" className="pl-9" {...field} />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="currentCondition"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current Condition</FormLabel>
+                  <div className="relative">
+                    <HeartPulse className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <FormControl>
+                      <Textarea
+                        placeholder="e.g., Feeling weak, experiencing side effects..."
+                        className="pl-9"
+                        {...field}
+                      />
                     </FormControl>
                   </div>
                   <FormMessage />

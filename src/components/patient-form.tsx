@@ -51,9 +51,11 @@ export const PatientFormSchema = z.object({
 type PatientFormProps = {
   onPredict: (data: z.infer<typeof PatientFormSchema>) => void;
   isLoading: boolean;
+  title: string;
+  description: string;
 };
 
-export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
+export function PatientForm({ onPredict, isLoading, title, description }: PatientFormProps) {
   const form = useForm<z.infer<typeof PatientFormSchema>>({
     resolver: zodResolver(PatientFormSchema),
     defaultValues: {
@@ -70,9 +72,9 @@ export function PatientForm({ onPredict, isLoading }: PatientFormProps) {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline">Patient Information</CardTitle>
+        <CardTitle className="font-headline">{title}</CardTitle>
         <CardDescription>
-          Fill in the details to assess readmission risk.
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>

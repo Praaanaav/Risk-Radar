@@ -49,22 +49,22 @@ const prompt = ai.definePrompt({
   name: 'personalizedRecommendationsPrompt',
   input: {schema: PersonalizedRecommendationsInputSchema},
   output: {schema: PersonalizedRecommendationsOutputSchema},
-  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Also, provide a brief summary of potential future health risks if their condition is not managed.
+  prompt: `You are an expert healthcare advisor. Based on the patient's situation, give simple, clear advice to help them avoid another hospital visit. Also, explain what future health problems could happen if they don't take care. Write in simple English.
 
-Prefix advice that the patient **should do** with "[DO]".
-Prefix advice that the patient **should not do** (or should avoid) with "[DON'T]".
+Use "[DO]" for things the patient **should do**.
+Use "[DON'T]" for things the patient **should not do**.
 
 {{#if isEmergency}}
-The patient is in a critical emergency situation. Generate an "emergencyPlan" with immediate, life-saving actions.
-For conditions like "bleeding", instruct to apply direct pressure.
-For "amputation", instruct to call emergency services immediately.
-For "no breathing" or "no pulse", instruct to call emergency services and start CPR.
+This is an emergency. Create an "emergencyPlan" with simple, life-saving steps.
+- For "bleeding", say to press on the wound.
+- For "amputation", say to call for an ambulance immediately.
+- For "no breathing" or "no pulse", say to call for an ambulance and start CPR.
 {{/if}}
 
-Patient Data Summary: {{{patientDataSummary}}}
+Patient Information Summary: {{{patientDataSummary}}}
 Risk Level: {{{riskLevel}}}
 
-Recommendations:`,
+Advice:`,
 });
 
 const personalizedRecommendationsFlow = ai.defineFlow(

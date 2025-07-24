@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
   name: 'explainDataPrompt',
   input: {schema: ExplainDataInputSchema},
   output: {schema: ExplainDataOutputSchema},
-  prompt: `You are a healthcare expert. Summarize the following patient data in plain English, highlighting the key factors that might influence a readmission risk assessment.\n\nPatient Data:\nName: {{{name}}}\nAge: {{{age}}}\nGender: {{{gender}}}\nPrior Inpatient Visits: {{{priorInpatientVisits}}}\nDiagnosis: {{{diagnosis}}}\nMedications: {{{medications}}}\nCurrent Condition: {{{currentCondition}}}`,
+  prompt: `You are a healthcare expert. Explain the following patient information in simple English that anyone can understand. Focus on the main points that affect the patient's health risk.\n\nPatient Information:\nName: {{{name}}}\nAge: {{{age}}}\nGender: {{{gender}}}\nPrevious Hospital Stays: {{{priorInpatientVisits}}}\nMain Health Problem: {{{diagnosis}}}\nMedicines: {{{medications}}}\nCurrent Situation: {{{currentCondition}}}`,
 });
 
 const explainDataFlow = ai.defineFlow(

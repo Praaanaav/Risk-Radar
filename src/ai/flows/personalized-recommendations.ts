@@ -15,6 +15,7 @@ import {z} from 'genkit';
 const PersonalizedRecommendationsInputSchema = z.object({
   patientDataSummary: z.string().describe('A plain English summary of the patient data and key risk factors.'),
   riskLevel: z.enum(['High', 'Low']).describe('The overall risk level for the patient.'),
+  isEmergency: z.boolean().describe('Whether the patient is in an emergency situation.'),
 });
 export type PersonalizedRecommendationsInput = z.infer<typeof PersonalizedRecommendationsInputSchema>;
 
@@ -28,6 +29,12 @@ const PersonalizedRecommendationsOutputSchema = z.object({
     .string()
     .describe(
       'A brief summary of potential future health risks or diseases the patient might face if the current condition is not managed properly.'
+    ),
+  emergencyPlan: z
+    .string()
+    .optional()
+    .describe(
+      'If the situation is an emergency, provide a clear, step-by-step emergency action plan. For example, for "no breathing", advise calling 911 and starting CPR. For "bleeding", advise applying pressure.'
     ),
 });
 export type PersonalizedRecommendationsOutput = z.infer<typeof PersonalizedRecommendationsOutputSchema>;
@@ -46,6 +53,13 @@ const prompt = ai.definePrompt({
 
 Prefix advice that the patient **should do** with "[DO]".
 Prefix advice that the patient **should not do** (or should avoid) with "[DON'T]".
+
+{{#if isEmergency}}
+The patient is in a critical emergency situation. Generate an "emergencyPlan" with immediate, life-saving actions.
+For conditions like "bleeding", instruct to apply direct pressure.
+For "amputation", instruct to call emergency services immediately.
+For "no breathing" or "no pulse", instruct to call emergency services and start CPR.
+{{/if}}
 
 Patient Data Summary: {{{patientDataSummary}}}
 Risk Level: {{{riskLevel}}}

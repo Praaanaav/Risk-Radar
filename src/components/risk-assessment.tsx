@@ -1,13 +1,14 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bot, CheckCircle, HeartPulse, ShieldAlert, ShieldCheck, Star, XCircle } from "lucide-react";
+import { Bot, CheckCircle, HeartPulse, ShieldAlert, ShieldCheck, Siren, Star, XCircle } from "lucide-react";
 
 type RiskAssessmentProps = {
   explanation: string;
   riskLevel: "High" | "Low";
   recommendations: string;
   futureRisks: string;
+  emergencyPlan?: string;
 };
 
 // A simple markdown to JSX component.
@@ -74,7 +75,8 @@ export function RiskAssessment({
   explanation,
   riskLevel,
   recommendations,
-  futureRisks
+  futureRisks,
+  emergencyPlan
 }: RiskAssessmentProps) {
   const riskLevelConfig = {
     High: {
@@ -97,6 +99,20 @@ export function RiskAssessment({
 
   return (
     <div className="space-y-6 animate-in fade-in-0 duration-500">
+      {emergencyPlan && (
+        <Card className="shadow-lg bg-red-50 border-red-200 animate-pulse">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-headline text-red-800">
+              <Siren className="h-6 w-6" />
+              <span>Emergency Action Required</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+             <p className="text-red-700 font-medium">{emergencyPlan}</p>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-headline">

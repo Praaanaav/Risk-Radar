@@ -28,6 +28,7 @@ type Assessment = {
   riskLevel: "High" | "Low";
   recommendations: string;
   futureRisks: string;
+  emergencyPlan?: string;
 };
 
 export default function Home() {
@@ -73,13 +74,14 @@ export default function Home() {
         }
       }
 
-      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating"];
-       for (const term of criticalConditionTerms) {
-        if (lowercasedCondition.includes(term)) {
+      const criticalConditionTerms = ["not breathing", "no pulse", "unresponsive", "not beating", "bleeding", "amputation"];
+      let isEmergency = false;
+      for (const term of criticalConditionTerms) {
+        if (lowercasedCondition.includes(term) || lowercasedDiagnosis.includes(term)) {
           riskScore += 5; // High score for immediate critical conditions
+          isEmergency = true;
         }
       }
-
 
       const riskLevel: "High" | "Low" = riskScore >= 4 ? "High" : "Low";
 
@@ -88,6 +90,7 @@ export default function Home() {
       const recommendationsResult = await generatePersonalizedRecommendations({
         patientDataSummary: explanationResult.explanation,
         riskLevel,
+        isEmergency,
       });
       if (!recommendationsResult.recommendations || !recommendationsResult.futureRisks) {
         throw new Error("Could not generate recommendations.");
@@ -98,6 +101,7 @@ export default function Home() {
         riskLevel,
         recommendations: recommendationsResult.recommendations,
         futureRisks: recommendationsResult.futureRisks,
+        emergencyPlan: recommendationsResult.emergencyPlan,
       });
     } catch (error) {
       console.error(error);

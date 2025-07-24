@@ -50,7 +50,7 @@ function Markdown({ content }: { content: string }) {
 }
 
 function HighlightedFutureRisks({ content }: { content: string }) {
-  const criticalTerms = ["permanent disability", "death"];
+  const criticalTerms = ["permanent disability", "death", "organ damage"];
   const regex = new RegExp(`(${criticalTerms.join("|")})`, "gi");
   const parts = content.split(regex);
 

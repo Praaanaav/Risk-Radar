@@ -1,12 +1,13 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bot, CheckCircle, HeartPulse, ShieldAlert, ShieldCheck, XCircle } from "lucide-react";
+import { Bot, CheckCircle, HeartPulse, ShieldAlert, ShieldCheck, Star, XCircle } from "lucide-react";
 
 type RiskAssessmentProps = {
   explanation: string;
   riskLevel: "High" | "Low";
   recommendations: string;
+  futureRisks: string;
 };
 
 // A simple markdown to JSX component.
@@ -14,14 +15,14 @@ function Markdown({ content }: { content: string }) {
   const parts = content.split(/(\[DO\].*?|\[DON'T\].*?)(?=\n|\[DO\]|\[DON'T\]|$)/g);
 
   return (
-    <div className="text-muted-foreground whitespace-pre-wrap space-y-3">
+    <div className="space-y-4">
       {parts.map((part, i) => {
         if (part.startsWith("[DO]")) {
           return (
             <div key={i} className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 shrink-0 text-accent mt-0.5" />
-              <p>
-                <span className="font-bold text-foreground">DO: </span>
+              <CheckCircle className="h-5 w-5 shrink-0 text-green-500 mt-0.5" />
+              <p className="text-muted-foreground">
+                <span className="font-bold text-green-500">DO: </span>
                 {part.slice(4).trim()}
               </p>
             </div>
@@ -30,16 +31,16 @@ function Markdown({ content }: { content: string }) {
         if (part.startsWith("[DON'T]")) {
           return (
             <div key={i} className="flex items-start gap-3">
-              <XCircle className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
-              <p>
-                <span className="font-bold text-foreground">DON'T: </span>
+              <XCircle className="h-5 w-5 shrink-0 text-red-500 mt-0.5" />
+              <p className="text-muted-foreground">
+                <span className="font-bold text-red-500">DON'T: </span>
                 {part.slice(7).trim()}
               </p>
             </div>
           );
         }
         if (part.trim()) {
-           return <p key={i}>{part.trim()}</p>;
+           return <p key={i} className="text-muted-foreground">{part.trim()}</p>;
         }
         return null;
       })}
@@ -52,6 +53,7 @@ export function RiskAssessment({
   explanation,
   riskLevel,
   recommendations,
+  futureRisks
 }: RiskAssessmentProps) {
   const riskLevelConfig = {
     High: {
@@ -112,6 +114,20 @@ export function RiskAssessment({
           </div>
         </CardContent>
       </Card>
+      
+      {futureRisks && (
+        <Card className="shadow-lg bg-yellow-50 border-yellow-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-headline text-yellow-800">
+              <Star className="h-5 w-5" />
+              <span>Future Risk Outlook</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-yellow-700">{futureRisks}</p>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="shadow-lg">
         <CardHeader>

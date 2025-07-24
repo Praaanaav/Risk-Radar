@@ -27,6 +27,7 @@ type Assessment = {
   explanation: string;
   riskLevel: "High" | "Low";
   recommendations: string;
+  futureRisks: string;
 };
 
 export default function Home() {
@@ -80,7 +81,7 @@ export default function Home() {
         patientDataSummary: explanationResult.explanation,
         riskLevel,
       });
-      if (!recommendationsResult.recommendations) {
+      if (!recommendationsResult.recommendations || !recommendationsResult.futureRisks) {
         throw new Error("Could not generate recommendations.");
       }
 
@@ -88,6 +89,7 @@ export default function Home() {
         explanation: explanationResult.explanation,
         riskLevel,
         recommendations: recommendationsResult.recommendations,
+        futureRisks: recommendationsResult.futureRisks,
       });
     } catch (error) {
       console.error(error);

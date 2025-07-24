@@ -24,6 +24,11 @@ const PersonalizedRecommendationsOutputSchema = z.object({
     .describe(
       'Personalized recommendations for the patient to reduce their risk of readmission, formatted as markdown. Critical advice that are things to do should be marked with [DO] and things to avoid with [DON\'T]. For example: "[DO]Take your medication as prescribed." or "[DON\'T]Skip your follow-up appointments."'
     ),
+  futureRisks: z
+    .string()
+    .describe(
+      'A brief summary of potential future health risks or diseases the patient might face if the current condition is not managed properly.'
+    ),
 });
 export type PersonalizedRecommendationsOutput = z.infer<typeof PersonalizedRecommendationsOutputSchema>;
 
@@ -37,7 +42,7 @@ const prompt = ai.definePrompt({
   name: 'personalizedRecommendationsPrompt',
   input: {schema: PersonalizedRecommendationsInputSchema},
   output: {schema: PersonalizedRecommendationsOutputSchema},
-  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Format the output as markdown.
+  prompt: `You are an expert healthcare advisor. Based on the patient's risk factors and overall risk level, provide personalized recommendations to reduce their chance of hospital readmission. Also, provide a brief summary of potential future health risks if their condition is not managed.
 
 Prefix advice that the patient **should do** with "[DO]".
 Prefix advice that the patient **should not do** (or should avoid) with "[DON'T]".
